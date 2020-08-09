@@ -115,14 +115,22 @@
         }
 
         if (isset($idErr) || isset($unameErr) || isset($emailErr) || isset($passErr) || (isset($utypeErr))) {} else {
-            /*setcookie('id', $id, time() + (10 * 365 * 24 * 60 * 60));
-            setcookie('email', $email, time() + (10 * 365 * 24 * 60 * 60));
-            setcookie('uname', $uname, time() + (10 * 365 * 24 * 60 * 60));
-            setcookie('pass', $pass, time() + (10 * 365 * 24 * 60 * 60));*/
+            $conn = mysqli_connect('127.0.0.1', 'root', '', 'miniproject');
+            if ($conn->connect_error) {
+              die("Connection failed: " . $conn->connect_error);
+            }
 
-            $file = fopen('user.txt', 'a');
-            fwrite($file, $uname.'|'.$pass.'|'.$uType.'|'.$id.'|'.$email.'|'."\r\n");
-            fclose($file);
+            $sql = "INSERT INTO users (id, uname, pass, email, utype)
+            VALUES ('$id', '$uname', '$pass', '$email', '$uType')";
+
+            if ($conn->query($sql) === TRUE) {
+              $error = "New record created successfully";
+              header('location: login.php');
+            } else {
+              $error = "Error: " . $sql . "<br>" . $conn->error;
+            }
+
+            $conn->close();
 
             header('location: login.php');
         }            
