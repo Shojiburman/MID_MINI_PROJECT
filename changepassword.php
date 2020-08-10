@@ -2,55 +2,57 @@
     session_start();
     include 'session.php';
     if (isset($_POST['submit'])) {
-        if (isset($_POST['cpass'])) {
-            $cpass = $_POST['cpass'];
-            if ($cpass == '') {
-                $passErr = 'Current Password can not be empty';
+        if (isset($_POST['pass'])) {
+            $pass = trim($_POST['pass']);
+            if ($pass == '') {
+                $passErr = 'Password can not be empty';
             }
         } else {
-            $passErr = 'Current Password is required';
+            $passErr = 'Password is required';
         }
-
-        if (isset($_POST['pass'])) {
-            $pass = $_POST['pass'];
-            if ($pass == '') {
-                $passErr = 'New Password can not be empty';
+        if (isset($_POST['npass'])) {
+            $npass = trim($_POST['npass']);
+            if ($npass == '') {
+                $passErr = 'Password can not be empty';
             }
         } else {
             $passErr = 'New Password is required';
         }
+        if (isset($_POST['cpass'])) {
+            $cpass = trim($_POST['cpass']);
+            if ($cpass == '') {
+                $passErr = 'Password can not be empty';
+            }
+        } else {
+            $passErr = 'Password is required';
+        }
+        if($npass != $cpass){
+            $passErr = "New password and Confirm password don't match";
+        }
+        if($npass == $pass){
+                $passErr = "Current password and New password is same. Try new password!";
+            }
 
-        if (isset($_POST['confPass'])) {
-            $confPass = $_POST['confPass'];
-            if ($confPass == '') {
-                $passErr = 'Re-Password can not be empty';
-            } else {
-                if (isset($pass) && ($pass == $confPass)) {
-                    $file = fopen('user.txt', 'r');
-                    $data = fread($file, filesize('user.txt'));
-                    $userData = explode("|",$data);
-                    $i = 0;
-                    foreach ($userData as $us) {
-                        if(trim($us) == trim($_SESSION['login_user'])){
-                            if(trim($userData[$i+1]) == $cpass){
-                                $filedata = file_get_contents('user.txt');
-                                $repP = trim($_SESSION['login_user']) . "|" . $cpass;
-                                $repA = trim($_SESSION['login_user']) . "|" . $pass;
-                                $strReplace = str_replace($repP, $repA, $filedata);
-                                file_put_contents('user.txt', $strReplace);
-                            }
-                        }
-                        $i++;
-                    }
-                    fclose($file);
-                    $passSuc = 'Password updated successfully';
-                    } else {
-                        $passErr = 'Retype Password &  New Password must match';
+        $conn = mysqli_connect('127.0.0.1', 'root', '', 'miniproject');
+        if ($conn->connect_error) {
+            die("Connection failed: " . $conn->connect_error);
+        }
+
+        if (isset($passErr)) {} else {
+            $sql = "select * from users where uname = '".$current_user."' AND pass = '".$pass."'";
+            if (($result = $conn->query($sql)) !== FALSE){
+                if($row = $result->fetch_assoc()){
+                    $sql = "UPDATE users SET pass = '".$cpass."'
+                    WHERE uname = '".$current_user."'";
+
+                    if ($conn->query($sql) === TRUE) {
+                        $passSuc = "Password changed successfully";
+                        header('location:logout.php');
                     }
                 }
-        } else {
-            $passErr = 'Retype Password is required';
+            }
         }
+        $conn->close();
     }
 ?>
 <!DOCTYPE html>
@@ -124,7 +126,7 @@
                                             <td>Current password</td>
                                             <td>:</td>
                                             <td>
-                                                <input name="cpass" type="password">
+                                                <input name="pass" type="password">
                                             </td>
                                             <td></td>
                                         </tr>
@@ -132,7 +134,7 @@
                                             <td>New password</td>
                                             <td>:</td>
                                             <td>
-                                                <input name="pass" type="password">
+                                                <input name="npass" type="password">
                                             </td>
                                             <td></td>
                                         </tr>
@@ -140,7 +142,7 @@
                                             <td>Retype password</td>
                                             <td>:</td>
                                             <td>
-                                                <input name="confPass" type="password">
+                                                <input name="cpass" type="password">
                                             </td>
                                             <td></td>
                                         </tr>
@@ -148,7 +150,7 @@
                                     <hr />
                                     <?php if (isset($passErr)) { echo '<strong>' . $passErr . '</strong><br/><br/>'; } ?>
                                     <?php if (isset($passSuc)) { echo '<em>' . $passSuc . '</em><br/><br/>'; } ?>
-                                    <input name="submit" type="submit" value="Change">
+                                    <input name="submit" type="submit" value="submit">
                                 </form>
                             </td>
                         </tr>

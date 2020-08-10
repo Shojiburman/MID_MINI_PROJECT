@@ -31,6 +31,7 @@
                             <a href="dashboard.php" >Dashboard</a>
                         <?php } ?> 
                     </li>
+                    <li><a href="viewProfile.php">View Profile</a></li>
                     <li><a href="changePassword.php">Change Password</a></li>
                     <li><a href="viewUsers.php">View Users</a></li>
                     <li><a href="logout.php">Logout</a></li>

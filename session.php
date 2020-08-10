@@ -1,4 +1,5 @@
 <?php
+	$_SESSION['cps'] = '';
 	if(isset($_SESSION['login_user']) || isset($_COOKIE['remember'])){
 	    if (isset($_SESSION['login_user'])) {
 	        $current_user =  trim($_SESSION['login_user']);
@@ -14,7 +15,6 @@
                     	$id = $row['id'];
                         $utype = $row['utype'];
                     }
-                    $passErr = 'Invalid user/password';
                 } 
             $conn->close();
 	    } elseif (isset($_COOKIE['remember'])) {
