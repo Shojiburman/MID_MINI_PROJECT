@@ -27,16 +27,21 @@
             $uname = strtolower(trim($_POST['uname']));
             if ($uname == '') {
                 $unameErr = 'User Name can not be empty';
-            } else { 
-            $file = fopen('user.txt', 'r');
-            $data = fread($file, filesize('user.txt'));
-            $userData = explode("|",$data);
-            foreach ($userData as $us) {
-                if(trim($us) == $uname){
-                    $unameErr = 'User Name is taken';
+            } else {
+            $conn = mysqli_connect('127.0.0.1', 'root', '', 'miniproject');
+            if ($conn->connect_error) {
+              die("Connection failed: " . $conn->connect_error);
+            }
+
+            $sql = "select email from users where uname = '".$uname."'";
+            if (($result = $conn->query($sql)) !== FALSE)
+            {
+                while($row = $result->fetch_assoc())
+                {
+                    $unameErr = "User name is taken";
                 }
             }
-            fclose($file);
+            $conn->close();
         }
         } else {
             $unameErr = 'User Name is required';
