@@ -20,14 +20,14 @@
         <tr>
             <td width="250px" style="padding: 0px 10px" align="top">
                 <strong>
-                    <p style="border-bottom: 1px solid black; padding: 10px 0">Account [<?php echo uType?>]</p>
+                    <p style="border-bottom: 1px solid black; padding: 10px 0">Account [<?php echo $utype?>]</p>
                 </strong>
                 <ul style="list-style-type: none;">
                     <li>
-                        <?php if(uType == 'admin'){ ?>
+                        <?php if($utype == 'admin'){ ?>
                             <a href="dashboardAdmin.php" >Dashboard</a>
                         <?php ?>
-                        <?php } else if(uType == "user"){ ?>
+                        <?php } else if($utype == "user"){ ?>
                             <a href="dashboard.php" >Dashboard</a>
                         <?php } ?> 
                     </li>
@@ -45,26 +45,29 @@
                         <th>User Type</th>
                     </tr>
                     <?php
-                    $file = fopen('user.txt', 'r');
-                    $data = fread($file, filesize('user.txt'));
-
-                    $userData = explode("|",$data);
-                    $len = count($userData);
-                    
-                    for($i = 0; $i < $len-5;) {
-                        $current_user = trim($userData[$i]);
-                        uType = trim($userData[$i+2]);
-                        $id = trim($userData[$i+3]);
-                        $email = trim($userData[$i+4]);
-                        $i+=5;
-                        echo "<tr>
-                                <td>{$id}</td>
-                                <td>{$current_user}</td>
-                                <td>{$email}</td>
-                                <td>{uType}</td>
-                            </tr>";
+                    $conn = mysqli_connect('127.0.0.1', 'root', '', 'miniproject');
+                    if ($conn->connect_error) {
+                        die("Connection failed: " . $conn->connect_error);
                     }
-                    fclose($file);
+
+                    $sql = "select * from users";
+                        if (($result = $conn->query($sql)) !== FALSE)
+                        {
+                            while($row = $result->fetch_assoc())
+                            {
+                                $vid = $row['id'];
+                                $vuname = $row['uname'];
+                                $vemail = $row['email'];
+                                $vuType = $row['utype'];
+                                echo "<tr>
+                                    <td>{$vid}</td>
+                                    <td>{$vuname}</td>
+                                    <td>{$vemail}</td>
+                                    <td>{$vuType}</td>
+                                </tr>";
+                            }
+                        }
+                    $conn->close();
                     ?>
                 </table>
             </td>
