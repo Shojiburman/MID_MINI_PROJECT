@@ -85,26 +85,26 @@
     <table width="1000px" border="1" cellpadding="0" cellspacing="0" align="center">
         <tr height="50px">
             <td colspan="2" align="right" style="padding-right: 10px">
-                <p style="display: inline-block;">Logged in as <b><?php echo ucwords($_SESSION['login_user']); ?></b></p>
+                <p style="display: inline-block;">Logged in as <b><?php echo ucwords($current_user); ?></b></p>
                 <a href="logout.php">Logout</a>
             </td>
         </tr>
         <tr>
             <td width="150px" style="padding: 0px 10px" align="top">
                 <b>
-                    <p style="border-bottom: 1px solid black; padding: 10px 0">Account</p>
+                    <p style="border-bottom: 1px solid black; padding: 10px 0">Account [<?php echo $utype?>]</p>
                 </b>
                 <ul style="list-style-type: none;">
                     <li>
-                        <?php if($_SESSION['uType'] == 'admin'){ ?>
+                        <?php if($utype == 'admin'){ ?>
                             <a href="dashboardAdmin.php" >Dashboard</a>
                         <?php ?>
-                        <?php } else if($_SESSION['uType'] == "user"){ ?>
+                        <?php } else if($utype == "user"){ ?>
                             <a href="dashboard.php" >Dashboard</a>
                         <?php } ?> 
                     </li>
                     <li><a href="viewProfile.php">Veiw Profile</a></li>
-                    <?php if($_SESSION['uType'] == 'admin'){ ?>
+                    <?php if($utype == 'admin'){ ?>
                         <li>
                             <a href="viewUsers.php">View Users</a>
                         </li>
