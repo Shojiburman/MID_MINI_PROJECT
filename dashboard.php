@@ -1,7 +1,6 @@
 <?php
     session_start();
     include 'session.php';
-    if($_SESSION['uType'] == "user"){
 ?>
 
 <!DOCTYPE html>
@@ -22,7 +21,7 @@
         </tr>
         <tr height = "120px">
             <td width="250px" style="padding: 0px 10px">
-                <strong><p style="border-bottom: 1px solid black; padding: 10px 0">Account</p></strong>
+                <strong><p style="border-bottom: 1px solid black; padding: 10px 0">Account [<?php echo $utype?>]</p></strong>
                 <ul style="list-style-type: none;">
                     <li><a href="viewProfile.php">Veiw Profile</a></li>
                     <li><a href="changePassword.php">Change Password</a></li>
@@ -38,10 +37,3 @@
 </body>
 
 </html>
-
-<?php
-
-}else if($_SESSION['uType'] == 'admin'){
-    header('location:dashboardAdmin.php');
-}
-?>

@@ -31,44 +31,35 @@
         }
 
         if(isset($unameErr) || isset($passErr)){}
-            else { 
-            $file = fopen('user.txt', 'r');
-            $data = fread($file, filesize('user.txt'));
-            $userData = explode("|",$data);
-            $i = 0;
-            foreach ($userData as $us) {
-                if(trim($us) == $uname){
-                    if(trim($userData[$i+1]) == $pass){
-                        if(trim($userData[$i+2]) == "user"){
-                            $_SESSION['uType']  = "user";
-                            $_SESSION['status']  = "Ok";
-                            $_SESSION['login_user'] = $uname;
-                            if(isset($remember) && in_array('yes', $remember)){
-                                setcookie('remember', $uname, time() + (10 * 365 * 24 * 60 * 60));
-                            } else {
-                                setcookie('remember', "");
-                            }
-                            header('location: dashboard.php');
-                        } else if(trim($userData[$i+2]) == 'admin'){
-                            $_SESSION['uType']  = "admin";
-                            $_SESSION['status']  = "Ok";
-                            $_SESSION['login_user'] = $uname;
-                            if(isset($remember) && in_array('yes', $remember)){
-                                setcookie('remember', $uname, time() + (10 * 365 * 24 * 60 * 60));
-                            } else {
-                                setcookie('remember', "");
-                            }
-                            header('location: dashboardAdmin.php');
+            else {
+                $conn = mysqli_connect('127.0.0.1', 'root', '', 'miniproject');
+
+                if ($conn->connect_error) {
+                  die("Connection failed: " . $conn->connect_error);
+                }
+                $sql = "select * from users where uname = '".$uname."' AND pass = '".$pass."'";
+                if (($result = $conn->query($sql)) !== FALSE){
+                    if($row = $result->fetch_assoc()){
+                        $_SESSION['login_user'] = $row['uname'];
+                        $utype = $row['utype'];
+                        if(isset($remember) && in_array('yes', $remember)){
+                            setcookie('remember', $uname, time() + (10 * 365 * 24 * 60 * 60));
                         } else {
-                            header('location: registration.php');
+                            setcookie('remember', "");
+                        }
+                        if(!isset($utype)){}
+                        else {
+                            if($utype == 'user'){
+                                header('location: dashboard.php');
+                            } elseif ($utype == 'admin') {
+                                header('location: dashboardAdmin.php');
+                            }
                         }
                     } else {
-                        $passErr = 'Invalid password';
+                        $passErr = 'Invalid user/password';
                     }
-                }
-                $i++;
-            } $passErr = 'Invalid user/password';
-            fclose($file);
+                } 
+            $conn->close();
         }                    
     } 
 ?>

@@ -1,0 +1,14 @@
+$conn = mysqli_connect('127.0.0.1', 'root', '', 'miniproject');
+if ($conn->connect_error) {
+	die("Connection failed: " . $conn->connect_error);
+}
+
+$sql = "select email from users where uname = '".$uname."'";
+	if (($result = $conn->query($sql)) !== FALSE)
+	{
+		while($row = $result->fetch_assoc())
+		{
+			$unameErr = "User name is taken";
+		}
+	}
+$conn->close();
